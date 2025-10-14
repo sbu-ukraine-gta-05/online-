@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>СБУ RP — UKRAINE GTA</title>
+<style>
+  :root{
+    --bg:#050507;
+    --panel:#0b0b0d;
+    --muted:#9aa0a6;
+    --accent:#21d07a;
+    --accent-2:#ff8a00;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --card-border: rgba(255,255,255,0.04);
+    --text:#eaf2ef;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  /* header */
+  header{
+    position:fixed;top:0;left:0;right:0;height:78px;
+    display:flex;align-items:center;justify-content:space-between;padding:12px 26px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.35));
+    border-bottom:1px solid rgba(255,255,255,0.03);z-index:120;
+    backdrop-filter: blur(6px);
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .shield{
+    width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:10px;border:1px solid rgba(255,255,255,0.04)
+  }
+  .titlebox{line-height:1}
+  .titlebox h1{margin:0;font-size:16px;color:var(--accent);letter-spacing:0.6px}
+  .titlebox p{margin:0;font-size:12px;color:var(--muted)}
+  nav ul{display:flex;gap:10px;list-style:none;margin:0;padding:0;align-items:center}
+  nav a{padding:8px 12px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:600}
+  nav a:hover{color:var(--accent);background:rgba(255,255,255,0.02)}
+  .login-btn{padding:8px 14px;border-radius:10px;border:none;background:var(--accent);color:#032617;font-weight:800;cursor:pointer}
+  /* background animated circles */
+  .bg-circles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .bg-circles .c{position:absolute;border-radius:50%;filter:blur(20px);opacity:0.06;mix-blend-mode:screen;animation:blink 10s infinite ease-in-out}
+  .c.c1{width:1100px;height:1100px;left:-350px;top:-450px;background:radial-gradient(circle at 30% 30%, #0f6, transparent 30%)}
+  .c.c2{width:900px;height:900px;right:-250px;bottom:-350px;background:radial-gradient(circle at 70% 60%, #0f9, transparent 30%);animation-duration:13s}
+  .c.c3{width:600px;height:600px;left:50%;transform:translateX(-50%);top:30%;background:radial-gradient(circle at 50% 50%, #0d8, transparent 30%);animation-duration:16s;opacity:0.04}
+  @keyframes blink{0%,100%{opacity:0.02}50%{opacity:0.09}}
+  /* main layout */
+  main{position:relative;z-index:10;padding:110px 28px 80px;max-width:1200px;margin:0 auto}
+  .card{background:linear-gradient(180deg,var(--panel), rgba(10,10,10,0.6));border-radius:12px;padding:18px;border:1px solid var(--card-border);box-shadow:0 8px 40px rgba(0,0,0,0.6);margin-bottom:24px}
+  h2{color:var(--accent);margin:0 0 10px 0;font-size:18px}
+  p{color:var(--muted);line-height:1.45}
+  /* reveal sections */
+  section{opacity:0;transform:translateY(36px);transition:all 700ms cubic-bezier(.2,.9,.2,1);margin-bottom:18px}
+  section.visible{opacity:1;transform:translateY(0)}
+  /* leadership grid */
+  .lead-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+  }
+  .lead-item{
+    background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+    border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;align-items:flex-start;
+  }
+  .lead-avatar{
+    width:68px;height:68px;border-radius:8px;flex:0 0 68px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;
+  }
+  .lead-body h3{margin:0;font-size:15px;color:var(--accent)} .lead-body p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+  /* units */
+  .units-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .unit{
+    padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;gap:10px;align-items:center;
+  }
+  .unit .em{width:54px;height:54px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03)}
+  .unit h4{margin:0;font-size:15px;color:var(--accent)} .unit p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+  /* gallery */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .photo{border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .photo img{width:100%;height:160px;object-fit:cover;display:block}
+  .photo .meta{padding:10px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  /* stats */
+  .stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .stat{min-width:170px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);text-align:center}
+  .stat .num{font-size:20px;color:var(--accent);font-weight:800}
+  .stat .label{font-size:13px;color:var(--muted);margin-top:6px}
+  /* promotion bar */
+  .promotion-wrap{max-width:1100px;margin:0 auto;padding:18px}
+  .promo-line{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow:auto;padding:10px 4px}
+  .promo-node{flex:0 0 auto;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);border:2px solid rgba(255,255,255,0.05);color:var(--muted);font-weight:700;cursor:pointer;position:relative;transition:transform .18s,box-shadow .18s}
+  .promo-node.active{background:linear-gradient(180deg,var(--accent), rgba(33,208,122,0.35));color:#002012;box-shadow:0 8px 28px rgba(33,208,122,0.12);transform:translateY(-6px)}
+  .promo-arrow{flex:0 0 auto;color:var(--muted);font-size:20px}
+  .promo-desc{margin-top:12px;text-align:center;color:var(--muted);font-size:14px}
+  /* tooltips/panel for requirement */
+  .req-panel{margin-top:18px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);min-height:56px}
+  .req-title{font-weight:800;color:var(--accent);margin-bottom:6px}
+  /* responsive */
+  @media (max-width:980px){ .lead-grid{grid-template-columns:repeat(2,1fr)} .gallery{grid-template-columns:repeat(2,1fr)} .units-grid{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:600px){ header{padding:10px} .lead-grid{grid-template-columns:1fr} .gallery{grid-template-columns:1fr} .promo-line{gap:8px} .promo-node{width:44px;height:44px} }
+</style>
+</head>
+<body>
+
+<!-- background circles -->
+<div class="bg-circles" aria-hidden="true">
+  <div class="c c1"></div>
+  <div class="c c2"></div>
+  <div class="c c3"></div>
+</div>
+
+<header>
+  <div class="brand">
+    <div class="shield" aria-hidden="true">
+      <!-- simple shield SVG -->
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2l7 3v5c0 5-3.5 9.5-7 11-3.5-1.5-7-6-7-11V5l7-3z" fill="#0f0"/>
+        <circle cx="12" cy="10" r="1.6" fill="#012" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="titlebox">
+      <h1>Служба Безпеки України</h1>
+      <p>UKRAINE GTA • Південна Україна [05]</p>
+    </div>
+  </div>
+
+  <nav>
+    <ul>
+      <li><a href="#about">Про СБУ</a></li>
+      <li><a href="#leadership">Керівництво</a></li>
+      <li><a href="#units">Підрозділи</a></li>
+      <li><a href="#promotion">Підвищення</a></li>
+      <li><a href="#stats">Статистика</a></li>
+      <li><a href="#gallery">Галерея</a></li>
+      <li><button class="login-btn" onclick="document.getElementById('login').scrollIntoView({behavior:'smooth'})">Вхід</button></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ABOUT -->
+  <section id="about" class="card">
+    <h2>Про СБУ</h2>
+    <p>Служба Безпеки України (СБУ) — головний орган державної безпеки, який відповідає за боротьбу з тероризмом, шпигунством, корупцією та загрозами національній безпеці.</p>
+  </section>
+
+  <!-- LEADERSHIP -->
+  <section id="leadership" class="card">
+    <h2>Керівництво</h2>
+    <p style="color:var(--muted);margin-bottom:12px">Актуальна інформація.</p>
+
+    <!-- Генерал (1) -->
+    <div style="margin-bottom:12px">
+      <div class="lead-item">
+        <div class="lead-avatar">
+          <!-- simple emblem SVG -->
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0f0"/></svg>
+        </div>
+        <div class="lead-body">
+          <h3>Генерал — Дмитро Джокер</h3>
+          <p>Очолює СБУ, відповідає за стратегічне планування, координацію всіх підрозділів та виконання місії з охорони національної безпеки. Має вирішальний голос у всіх операціях і особисто контролює ключові спецоперації.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Полковники (6) -->
+    <h3 style="margin-top:8px;color:var(--accent)">Полковники (6)</h3>
+    <div class="lead-grid" style="margin-bottom:12px">
+      <!-- 6 blocks -->
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Максим Кесвер</h3><p>Керує підрозділом АТЦ. Відповідає за антитерористичні операції та нейтралізацію терористичних загроз.</p></div></div>
+
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Тифофій Черненко</h3><p>Очолює НАСБ. Контролює аналітичну роботу та збір розвідданих по всій території.</p></div></div>
+
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Андрій Чікатіла</h3><p>Відповідає за спецоперації високої складності, штурмові групи та захист важливих осіб.</p></div></div>
+
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Сергій Морозов</h3><p>Очолює ДБР. Контролює боротьбу з корупцією та економічними злочинами.</p></div></div>
+
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+    </div>
+
+    <!-- Підполковники (10) -->
+    <h3 style="margin-top:0;color:var(--accent)">Підполковники (10)</h3>
+    <div class="lead-grid" style="margin-bottom:12px">
+      <!-- generate 10 items -->
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Максим Хмелевський</h3><p>Керівник ЦСО "А", координує штурмові групи.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Роман Морозов</h3><p>Керівник ДБР, керує відділом економічних розслідувань.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+    </div>
+
+    <!-- Майори (12) -->
+    <h3 style="margin-top:10px;color:var(--accent)">Майори (12)</h3>
+    <div class="lead-grid">
+      <!-- 12 majors -->
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+      <div class="lead-item"><div class="lead-avatar"><svg width="40" height="40" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div class="lead-body"><h3>Вакантно</h3><p>Наразі відсутній.</p></div></div>
+    </div>
+  </section>
+
+  <!-- UNITS -->
+  <section id="units" class="card">
+    <h2>Підрозділи</h2>
+    <p style="color:var(--muted)">Актуальні підрозділи, та їх значення.</p>
+    <div class="units-grid" style="margin-top:12px">
+      <div class="unit"><div class="em" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0f0"/></svg></div><div><h4>Підрозділ AТЦ (Антитерористичний Центр)</h4><p>Боротьба з тероризмом, швидке реагування на загрози.</p></div></div>
+
+      <div class="unit"><div class="em"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0fb7ff"/></svg></div><div><h4>Підрозділ ДБР (Департамент Боротьби з Розкраданням)</h4><p>Контроль корупційних схем, економічна безпека.</p></div></div>
+
+      <div class="unit"><div class="em"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ffd166"/></svg></div><div><h4>Підрозділ ДКР (Департамент Контррозвідки)</h4><p>Виявлення шпигунів, робота на кордонах, захист від ворогів держави.</p></div></div>
+
+      <div class="unit"><div class="em"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#ff8a00"/></svg></div><div><h4>Підрозділ ЦСО "А" (Центр Спеціальних Операцій "А")</h4><p>Штурмові групи, високоризикові операції та VIP-захист.</p></div></div>
+
+      <div class="unit"><div class="em"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#9b59b6"/></svg></div><div><h4>Підрозділ НАСБ (Національна Академія Служби Безпеки)</h4><p>Підготовка та навчання офіцерів СБУ, розвиток тактики та стратегічних навичок.</p></div></div>
+
+      <div class="unit"><div class="em"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#00a86b"/></svg></div><div><h4>Підрозділ “Сірий Орел”</h4><p>Кібербезпека, технологічна розвідка, захист інформаційних систем держави.</p></div></div>
+    </div>
+  </section>
+
+  <!-- PROMOTION -->
+  <section id="promotion" class="card">
+    <h2>Система підвищення</h2>
+    <p style="color:var(--muted)">Горизонтальна лінія з 12 точок. Натисни на точку — побачиш вимоги для переходу на наступний рівень.</p>
+
+    <div class="promotion-wrap">
+      <div class="promo-line" id="promoLine" tabindex="0" aria-label="Система підвищення">
+        <!-- 12 nodes + arrows between -->
+        <!-- nodes will be rendered by JS to keep code readable -->
+      </div>
+
+      <div class="req-panel card" id="reqPanel">
+        <div class="req-title" id="reqTitle">Оберіть рівень</div>
+        <div class="req-text" id="reqText" style="color:var(--muted)">Після натискання на будь-яку точку ви побачите вимоги для підвищення.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats" class="card">
+    <h2>Статистика</h2>
+    <div class="stats" style="margin-top:10px">
+      <div class="stat">
+        <!-- svg icon -->
+        <svg width="36" height="36" viewBox="0 0 24 24"><path d="M12 2l7 3v6c0 4-3 8-7 10-4-2-7-6-7-10V5l7-3z" fill="#0f0"/></svg>
+        <div class="num" id="stat-members">124</div>
+        <div class="label">Учасників у фракції</div>
+      </div>
+
+      <div class="stat">
+        <svg width="36" height="36" viewBox="0 0 24 24"><path d="M3 12h18" stroke="#0f0" stroke-width="2" fill="none"/></svg>
+        <div class="num" id="stat-arrested">47</div>
+        <div class="label">Ув'язнених</div>
+      </div>
+
+      <div class="stat">
+        <svg width="36" height="36" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#0f0" stroke-width="2"/></svg>
+        <div class="num" id="stat-quality">91%</div>
+        <div class="label">Якість роботи</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="card">
+    <h2>Галерея</h2>
+    <p style="color:var(--muted)">Фото, дата та опис під фото.</p>
+    <div class="gallery" style="margin-top:12px">
+      <div class="photo"><img src="https://i.postimg.cc/WzDmwnsD/photo-2025-10-07-01-32-20-2.jpg" alt="Op1"><div class="meta"><div>Пам'ятка біля Головного Управління</div><div style="color:var(--muted)">07.10.2025</div></div></div>
+      <div class="photo"><img src="https://i.postimg.cc/mDSZ6f20/photo-2025-08-06-16-03-06-3.jpg" alt="Training"><div class="meta"><div>Вербуваняя новоприбулих</div><div style="color:var(--muted)">06.08.2025</div></div></div>
+      <div class="photo"><img src="https://i.postimg.cc/rsbJBHh6/photo-2025-10-06-15-54-39.jpg" alt="Award"><div class="meta"><div>Арешт особливого приступника</div><div style="color:var(--muted)">06.10.2025</div></div></div>
+      <div class="photo"><img src="https://i.postimg.cc/Jz9hs52F/photo-2025-08-06-16-03-06-2.jpg" alt="Award"><div class="meta"><div>Головне Управління Служби Безпеки України</div><div style="color:var(--muted)">06.08.2025</div></div></div>
+      <div class="photo"><img src="https://i.postimg.cc/6QnpnGsq/photo-2025-08-29-12-29-16.jpg" alt="Award"><div class="meta"><div>Наша уся дружня одна сім'я</div><div style="color:var(--muted)">29.08.2025</div></div></div>
+    </div>
+  </section>
+
+  <!-- LOGIN (anchor target) -->
+  <section id="login" class="card">
+    <h2>Вхід (імітація)</h2>
+    <p style="color:var(--muted)">Це тимчасова форма входу — не працює наразі. (для демо).</p>
+    <div style="max-width:420px;margin:12px 0">
+      <input id="loginUser" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)" placeholder="Нікнейм"><br><br>
+      <input id="loginPass" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)" placeholder="Пароль" type="password"><br><br>
+      <button class="login-btn" id="btnLogin">Увійти</button>
+      <div id="loginResult" style="margin-top:10px;color:var(--muted)"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="position:relative;z-index:20">
+  <div style="max-width:1200px;margin:0 auto;padding:18px;color:var(--muted);text-align:center">© <span id="curYear"></span> Служба Безпеки України — UKRAINE GTA (RP)</div>
+</footer>
+
+<script>
+  // set year
+  document.getElementById('curYear').textContent = new Date().getFullYear();
+
+  // smooth scroll for header links
+  document.querySelectorAll('header nav a').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const href = a.getAttribute('href');
+      document.querySelector(href).scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // reveal sections
+  const sections = document.querySelectorAll('main section');
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting) en.target.classList.add('visible');
+    });
+  },{threshold:0.18});
+  sections.forEach(s=>io.observe(s));
+
+  // PROMOTION BAR: construct 12 nodes and define requirements
+  const promoLine = document.getElementById('promoLine');
+  const reqPanelTitle = document.getElementById('reqTitle');
+  const reqPanelText = document.getElementById('reqText');
+
+  // define 12 nodes with optional rank labels and requirements
+  const nodes = [
+    {id:1,label:'Курсант', req:'Вимога: Пройти верубвання'},
+    {id:2,label:'Капрал', req:'Вимога: Пройти онлайн іспит, подати на роль в Discord'},
+    {id:3,label:'Сержант', req:'Вимога: Набрати 4 бали.'},
+    {id:4,label:'Старший сержант', req:'Вимога: Набрати 8 балів'},
+    {id:5,label:'Мол.лейтенант', req:'Вимога: Набрати 12 балів'},
+    {id:6,label:'Лейтенант', req:'Вимога: Набрати 25 балів'},
+    {id:7,label:'Старший лейтенант', req:'Вимога: Набрати 35 бали'},
+    {id:8,label:'Капітан', req:'Вимога: Набрати 45 балів'},
+    // nodes 9-12 — зарезервовані / можна доповнити пізніше
+    {id:9,label:'—', req:'Пройти співбесіду'},
+    {id:10,label:'—', req:'Пройти співбесіду'},
+    {id:11,label:'—', req:'Пройти співбесіду'},
+    {id:12,label:'—', req:'Пройти співбесіду'}
+  ];
+
+  // render nodes with arrows
+  nodes.forEach((n, idx) => {
+    const nodeEl = document.createElement('div');
+    nodeEl.className = 'promo-node';
+    nodeEl.dataset.idx = idx;
+    nodeEl.setAttribute('title', n.label + (n.req?(' — ' + n.req):''));
+    nodeEl.innerHTML = '<div style="font-size:13px">'+n.id+'</div>';
+    promoLine.appendChild(nodeEl);
+
+    // arrow except after last
+    if(idx < nodes.length-1){
+      const arrow = document.createElement('div');
+      arrow.className = 'promo-arrow';
+      arrow.innerHTML = '➜';
+      promoLine.appendChild(arrow);
+    }
+
+    // click behavior: show requirement and set active
+    nodeEl.addEventListener('click', ()=>{
+      document.querySelectorAll('.promo-node').forEach(x=>x.classList.remove('active'));
+      nodeEl.classList.add('active');
+      const label = n.label || ('Рівень ' + n.id);
+      reqPanelTitle.textContent = label + (n.label && n.id <=8 ? (' ['+n.id+']') : '');
+      reqPanelText.textContent = n.req || 'Немає додаткових вимог';
+      // ensure panel visible
+      reqPanelTitle.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+
+    // hover tooltip alternative (show quick in panel but not set active)
+    nodeEl.addEventListener('mouseenter', ()=>{
+      reqPanelTitle.textContent = (n.label && n.id <=8) ? (n.label + ' ['+n.id+']') : ('Рівень ' + n.id);
+      reqPanelText.textContent = n.req;
+    });
+    nodeEl.addEventListener('mouseleave', ()=>{
+      // if some active remains, show that, else reset
+      const active = document.querySelector('.promo-node.active');
+      if(active){
+        const aidx = active.dataset.idx;
+        const an = nodes[aidx];
+        reqPanelTitle.textContent = (an.label && an.id<=8)? (an.label + ' ['+an.id+']') : ('Рівень ' + an.id);
+        reqPanelText.textContent = an.req;
+      } else {
+        reqPanelTitle.textContent = 'Оберіть рівень';
+        reqPanelText.textContent = 'Після натискання на будь-яку точку ви побачите вимоги для підвищення.';
+      }
+    });
+  });
+
+  // small UX: set default active to node 2 (Капрал)
+  setTimeout(()=>{ const defaultNode = document.querySelectorAll('.promo-node')[1]; if(defaultNode){ defaultNode.click(); } },650);
+
+  // Simple login imitation (local)
+  const btnLogin = document.getElementById('btnLogin');
+  const loginResult = document.getElementById('loginResult');
+  btnLogin.addEventListener('click', ()=>{
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    if(!u||!p){ loginResult.textContent = 'Введіть нік та пароль.'; return; }
+    // fake success
+    localStorage.setItem('sbu_session', JSON.stringify({user:u,rank:'Курсант'}));
+    loginResult.style.color = 'var(--accent)';
+    loginResult.textContent = `Вітання, ${u}! Ви увійшли як Курсант.`;
+  });
+
+  // responsive: ensure promo line keyboard scrollable
+  const promoLineEl = document.getElementById('promoLine');
+  promoLineEl.addEventListener('wheel', (e) => {
+    if(Math.abs(e.deltaX) < Math.abs(e.deltaY)){
+      promoLineEl.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  // keyboard left/right to move between nodes
+  document.addEventListener('keydown', (e)=>{
+    if(['ArrowLeft','ArrowRight'].includes(e.key)){
+      const nodesEls = Array.from(document.querySelectorAll('.promo-node'));
+      const activeIdx = nodesEls.findIndex(x => x.classList.contains('active'));
+      if(activeIdx === -1){ nodesEls[0].click(); return; }
+      if(e.key === 'ArrowLeft' && activeIdx>0) nodesEls[activeIdx-1].click();
+      if(e.key === 'ArrowRight' && activeIdx < nodesEls.length-1) nodesEls[activeIdx+1].click();
+    }
+  });
+
+  // small accessibility focus for promo line
+  promoLineEl.addEventListener('focus', ()=>{ promoLineEl.style.outline='2px solid rgba(33,208,122,0.12)'; });
+  promoLineEl.addEventListener('blur', ()=>{ promoLineEl.style.outline='none'; });
+
+  // ensure header login button visible on small screens by auto-scrolling header into view on resize (minor)
+  window.addEventListener('resize', ()=>{ document.querySelector('header').style.position='fixed'; });
+
+  // optional: data for stats (could be replaced by dynamic fetch)
+  document.getElementById('stat-members').textContent = '28';
+  document.getElementById('stat-arrested').textContent = '???';
+  document.getElementById('stat-quality').textContent = '92%';
+
+</script>
+</body>
+</html>
